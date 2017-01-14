@@ -1,0 +1,58 @@
+PAQ file compressor benchmark
+By Eugene Varnavsky, 1 of October 2007
+
+PAQ version: PAQ8O6
+Test machine: AMD Athlon 64 X2 4000+ with 2 Gb RAM
+Test OS: Linux Ubuntu 7.10 (kernel 2.6.22-12)
+Compression subject: Calgary Corpus file set (tarballed)
+Type of compression: Strongest (-8)
+Uncompressed size: 3266560
+Compressed size: 618826
+Compiled with G++ 4.2.1
+32-bit process uses 1712188703 bytes of memory 
+64-bit process uses 1712190391 bytes of memory
+that is about 1632 Mbytes
+Multiple runs show deviation from 2 to 8 seconds.
+
+====
+GENERIC
+====
+nasm paq7asm.asm -f elf
+g++-4.2 paq8o6.cpp -m32 -DUNIX -O2 -Os -s -march=pentiumpro -fomit-frame-pointer -o paq8o6 paq7asm.o
+====
+Time 555.57 sec
+====
+Standard compilation with assembly module
+
+====
+SSE Optimized compilation
+====
+nasm ./paq7asmsse.asm -f elf -O3
+g++-4.2 paq8o6.cpp -m32 -O3 -s -fomit-frame-pointer -march=k8 -ffast-math -msse2 -msseregparm -mfpmath=sse -DUNIX -o paq8o6_sse paq7asmsse.o
+====
+Time 397.34 sec
+====
+Significant speed improvement.
+
+====
+AMD64
+====
+yasm paq7asm-x86_64.asm -f elf -m amd64
+g++-4.2 -O3 -s -fomit-frame-pointer -mtune=k8 -ffast-math -msse2 -mfpmath=sse -masm=att -DUNIX paq8o6.cpp paq7asm-x86_64.o -o paq8o6_64
+====
+Time 366.71 sec
+====
+64-bit version gives even more speed improvement.
+
+See also:
+
+PAQ compressors homepage:
+http://www.cs.fit.edu/~mmahoney/compression/
+
+Wikipedia:
+http://en.wikipedia.org/wiki/PAQ
+
+PowerPAQ project homepage (with Linux binaries):
+http://powerpaq.sourceforge.net
+
+
